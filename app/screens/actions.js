@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, Button, ScrollView, Switch, KeyboardAvoidingView} from 'react-native';
 import { AppLoading } from 'expo';
+
 import * as Font from 'expo-font';
 import CountDown from 'react-native-countdown-component';
 
@@ -13,13 +14,17 @@ let customFonts  = {
 };
 
 export default class Actions extends React.Component  {
-  state = {
-    fontsLoaded: false,
-    playing: false,
-    switchValue: false,
-    switch: 'Off',
-    time: 10,
-  };
+ 
+
+state = {
+  fontsLoaded: false,
+  playing: false,
+  switchValue: false,
+  switch: 'Off',
+  time: 10,
+  uv: false,
+  
+};
 
   async _loadFontsAsync() {
     await Font.loadAsync(customFonts);
@@ -28,12 +33,11 @@ export default class Actions extends React.Component  {
 
   componentDidMount() {
     this._loadFontsAsync();
+    
+    
   }
 
-  setSan(artist){
-    this.setState({switchValue:true});
-    this.setState({time:artist});
-  }
+  
   getData() {
     return  [
     {
@@ -75,8 +79,22 @@ export default class Actions extends React.Component  {
       //state changes according to switch
       //which will result in re-render the text
    }
+   toggleMethod = (value) => {
+    //onValueChange of the switch this function will be called
+    this.setState({uv: value})
+    if(this.state.uv==false){
+    this.setState({switch: 'On'})
+    }
+    else if(this.state.switchValue==true){
+      this.setState({switch: 'Off'})
+      }
+    //state changes according to switch
+    //which will result in re-render the text
+ }
 
   render(){
+    const { timer, switchVal } = this.props.route.params;
+    
     if (this.state.fontsLoaded) {
     return (
     <View style={styles.container}>
@@ -86,11 +104,11 @@ export default class Actions extends React.Component  {
           <View style={{marginTop:'5%'}}>
             <Text style={{position:'relative',fontSize:20,marginTop:'5%',textAlign:'center', color:'#364f6b', fontFamily:'FuturaH'}}>Status</Text>
             <View style={{flex:1, flexDirection:'column', position:'absolute', zIndex:3, top:'110%', alignSelf:'center'}}
-           ><Text style={{position:'relative',fontSize:20,marginTop:'5%',textAlign:'center', color:'#364f6b', fontFamily:'FuturaL'}}>Power : {this.state.switch}</Text>
+           ><Text style={{position:'relative',fontSize:20,marginTop:'5%',textAlign:'center', color:'#364f6b', fontFamily:'FuturaL'}}>Power: {this.state.switch}</Text>
            {this.state.switchValue &&
            <View><Text style={{position:'relative',fontSize:20,marginTop:'10%',textAlign:'center', color:'#364f6b', fontFamily:'FuturaL'}}>Timer</Text>
            <CountDown
-            until={this.state.time}
+            until={parseInt(timer)*60}
             onFinish={() => alert('Sanitization complete.')}
             onPress={() => alert('Sanitron is busy killing germs')}
             size={20}
@@ -102,7 +120,7 @@ export default class Actions extends React.Component  {
            {!this.state.switchValue &&
            <View>
            <Image source={require('../assets/sleep.png')} style={styles.middle}></Image>
-           <Text style={{position:'relative',fontSize:15,marginTop:'5%',textAlign:'center', color:'#364f6b', fontFamily:'FuturaH'}}>Add Preset</Text>
+           <Text style={{position:'relative',fontSize:15,marginTop:'5%',textAlign:'center', color:'#364f6b', fontFamily:'FuturaH'}}>Add Preset </Text>
            <TextInput placeholder={'Timer settings'} style={{textAlign:'center',marginTop:'0%',}}></TextInput></View>}
 
            <TextInput placeholder={'Enter a name'} style={{textAlign:'center',marginTop:'0%',}}></TextInput>
@@ -114,13 +132,27 @@ export default class Actions extends React.Component  {
 
       <Text style={{position:'relative',fontSize:20,marginTop:'10%',marginLeft:'10%', textAlign:'left', color:'#364f6b', fontFamily:'FuturaH'}}>Settings</Text>
       <View style={{flex:1, flexDirection:'row', position:'absolute', zIndex:3, top:'57%', alignSelf:'center', backgroundColor:'#6C63FF', padding:'5%', borderRadius:10}}>
-        <Text style={{position:'relative',fontSize:20,marginTop:'0%',marginLeft:'5%',textAlign:'left', fontFamily:'FuturaL', color:'#FFF'}}>Set Timer</Text>
-           <TextInput placeholder={'mins'} style={{marginLeft:'5%',marginTop:'-2.5%',}}></TextInput>
-            <Text style={{position:'relative',fontSize:20,marginTop:'0%',marginLeft:'15%',textAlign:'left', color:'#FFF', fontFamily:'FuturaL'}}>Power</Text>
+        <Text style={{position:'relative',fontSize:20,marginTop:'0%',marginLeft:'5%',textAlign:'left', fontFamily:'FuturaL', color:'#FFF'}}>Timer</Text>
+           <TextInput placeholder={timer} style={{marginLeft:'5%',marginTop:'-1%',}}></TextInput>
+           
+           <Text style={{position:'relative',fontSize:15,marginTop:'2%',marginLeft:'5%',textAlign:'left', color:'#FFF', fontFamily:'FuturaL'}}>UV</Text>
            <Switch
-          style={{width:70}}
+          style={{width:50}}
+          onValueChange = {this.toggleMethod}
+           trackColor = {'#FFF'}
+           thumbColor = {'#FFF'}
+          value = {this.state.uv}/>
+           <Text style={{position:'relative',fontSize:15,marginTop:'2%',marginLeft:'0%',textAlign:'left', color:'#FFF', fontFamily:'FuturaL'}}>Wet</Text>
+           
+            <Text style={{position:'relative',fontSize:20,marginTop:'0%',marginLeft:'5%',textAlign:'left', color:'#FFF', fontFamily:'FuturaL'}}>Power</Text>
+           <Switch
+          style={{width:50}}
           onValueChange = {this.toggleSwitch}
-          value = {this.state.switchValue}/></View>
+          value = {this.state.switchValue}/>
+
+
+          </View>
+          
 
 
 <Text style={{position:'relative',fontSize:20,marginTop:'25%',marginLeft:'10%', textAlign:'left', color:'#364f6b', fontFamily:'FuturaH'}}>Presets</Text>
@@ -137,6 +169,8 @@ export default class Actions extends React.Component  {
     }
   }
 }
+
+
 
 const styles = StyleSheet.create({
   container: {

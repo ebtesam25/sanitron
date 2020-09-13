@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
 import Song from './song';
-
+import {setSan} from '../screens/actions';
 const styles = StyleSheet.create({
     container: {
         flex: 1,

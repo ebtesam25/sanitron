@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export default function Song({ route,name,album, artist}) {
@@ -9,7 +10,13 @@ export default function Song({ route,name,album, artist}) {
     <View style={styles.container}>
          <Image source={require('../assets/settings.png')} style={styles.photo} />
         <View style={styles.fishdeets}>  
-        <Text style={styles.name} onPress={setSan(artist)}>{name}</Text>
+       <TouchableOpacity onPress={()=>{
+          /* 1. Navigate to the Details route with params */
+          navigation.navigate('Actions', {
+            timer: artist,
+            switchVal: true,
+          });
+        }}><Text style={styles.name}>{name}</Text></TouchableOpacity> 
        
             <Text style={styles.description}>
                 {artist}
@@ -41,10 +48,10 @@ const styles = StyleSheet.create({
         
     },
     name: {
-        fontSize: 20,
+        fontSize: 18,
         color: '#000',
         fontFamily:'FuturaH',
-        marginTop: '-5%',
+        marginTop: '0%',
         textAlignVertical:'center',
     },
      photo: {
@@ -61,7 +68,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         marginLeft: 30,
-        marginTop:20,
+        marginTop:0,
         marginRight: 30,
         justifyContent: 'center',
         
